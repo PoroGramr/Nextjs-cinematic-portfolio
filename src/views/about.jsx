@@ -43,8 +43,8 @@ export default function AboutPage() {
       {/* Background image */}
       <div className="ap-img absolute inset-0 z-0 opacity-20">
         <Image
-          src="/photo/about me.webp"
-          alt="Sarang"
+          src="/photo/junseo-cyber-bg-v1.webp"
+          alt="Junseo Park's cyber security workspace"
           fill
           className="object-cover object-center filter blur-md"
           priority
@@ -69,11 +69,11 @@ export default function AboutPage() {
 
         <div className="ap-card flex justify-center my-6">
           <ProfileCard
-            name="Sarang"
-            title="Creative Developer & Designer"
-            handle="sarang"
-            avatarUrl="/photo/Sarang.png"
-            miniAvatarUrl="/photo/Sarang.png"
+            name="Junseo Park"
+            title="Full Stack AI Developer"
+            handle="PoroGramr"
+            avatarUrl="/photo/junseo-3d-character-v1.webp"
+            miniAvatarUrl="/photo/junseo-3d-character-v1.webp"
             showUserInfo={true}
             enableTilt={false}
             enableMobileTilt={false}
@@ -110,7 +110,7 @@ export default function AboutPage() {
             </div>
           </div>
           <div>
-            <p className="ap-bio text-[9px] tracking-[0.4em] uppercase mb-3 text-white/45">Creative Tools</p>
+            <p className="ap-bio text-[9px] tracking-[0.4em] uppercase mb-3 text-white/45">AI &amp; Infrastructure</p>
             <div className="flex gap-1.5 overflow-x-auto pb-2 -mx-5 px-5 scrollbar-none">
               {CREATIVE.map((s) => (
                 <span key={s.name} className="ap-skill flex-shrink-0 px-3 py-1 flex items-center gap-1 bg-white/10 rounded-full text-[8px] text-white tracking-wider uppercase">
@@ -141,11 +141,11 @@ export default function AboutPage() {
           {/* Left: Interactive Studio Card (Sticky) */}
           <div className="ap-card flex justify-center items-start sticky top-[15vh]">
             <ProfileCard
-              name="Sarang"
-              title="Creative Developer & Designer"
-              handle="sarang"
-              avatarUrl="/photo/Sarang.png"
-              miniAvatarUrl="/photo/Sarang.png"
+              name="Junseo Park"
+              title="Full Stack AI Developer"
+              handle="PoroGramr"
+              avatarUrl="/photo/junseo-3d-character-v1.webp"
+              miniAvatarUrl="/photo/junseo-3d-character-v1.webp"
               showUserInfo={true}
               enableTilt={true}
               enableMobileTilt={false}
@@ -192,7 +192,7 @@ export default function AboutPage() {
             </div>
           </div>
           <div>
-            <p className="text-[10px] tracking-[0.4em] uppercase mb-4 text-[#ff6b1a]/80 font-medium">Creative Tools</p>
+            <p className="text-[10px] tracking-[0.4em] uppercase mb-4 text-[#ff6b1a]/80 font-medium">AI &amp; Infrastructure</p>
             <div className="flex gap-2 flex-wrap">
               {CREATIVE.map((s) => (
                 <span key={s.name} className="ap-skill px-3 py-1 flex items-center gap-1.5 bg-white/10 rounded-full text-[9px] text-white tracking-wider uppercase font-medium border border-white/10">
