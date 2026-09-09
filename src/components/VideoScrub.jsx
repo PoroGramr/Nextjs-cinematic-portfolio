@@ -21,24 +21,6 @@ export default function VideoScrub() {
     let seeking = false;
     let pendingTime = null;
 
-    const revealVideo = () => {
-      scene.dataset.videoReady = "true";
-    };
-
-    const primeFirstFrame = () => {
-      video.muted = true;
-      video.playsInline = true;
-      video.load();
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.then === "function") {
-        playPromise
-          .then(() => video.pause())
-          .catch(() => {
-            // Muted autoplay can still be blocked in some contexts; seeking still primes the frame.
-          });
-      }
-    };
-
     const getEndScroll = () => {
       const contact = document.getElementById("contact-section");
       if (!contact) {
@@ -99,12 +81,9 @@ export default function VideoScrub() {
       // Seeking to exact 0 can leave the first frame undecoded on a cold page load in Safari/Chrome.
       // A tiny non-zero seek primes the decoder, while still visually showing the opening frame.
       video.currentTime = Math.max(0.001, renderedTime);
-      primeFirstFrame();
     };
 
     video.addEventListener("loadedmetadata", onMetadata);
-    video.addEventListener("loadeddata", revealVideo);
-    video.addEventListener("canplay", revealVideo);
     video.addEventListener("seeked", flushSeek);
     window.addEventListener("scroll", updateTarget, { passive: true });
     window.addEventListener("resize", updateTarget, { passive: true });
@@ -116,8 +95,6 @@ export default function VideoScrub() {
     return () => {
       if (frameId !== null) cancelAnimationFrame(frameId);
       video.removeEventListener("loadedmetadata", onMetadata);
-      video.removeEventListener("loadeddata", revealVideo);
-      video.removeEventListener("canplay", revealVideo);
       video.removeEventListener("seeked", flushSeek);
       window.removeEventListener("scroll", updateTarget);
       window.removeEventListener("resize", updateTarget);
@@ -133,8 +110,6 @@ export default function VideoScrub() {
         poster="/photo/junseo-video-poster.webp"
         className="scene-video"
         muted
-        autoPlay
-        loop
         playsInline
         preload="auto"
         disablePictureInPicture
@@ -171,14 +146,8 @@ export default function VideoScrub() {
           object-position: center center;
           transform: scale(var(--video-scale));
           transform-origin: center;
-          will-change: transform, opacity;
+          will-change: transform;
           filter: saturate(0.92) contrast(1.03);
-          opacity: 0;
-          transition: opacity 420ms ease;
-        }
-
-        .video-scene[data-video-ready="true"] .scene-video {
-          opacity: 1;
         }
 
         .mobile-video-backdrop {
