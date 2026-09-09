@@ -36,7 +36,7 @@ export default function ContactPage() {
       const fullNumber = selectedCC.code + phoneNumber;
       const myNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919999999999";
       const msg = encodeURIComponent(
-        `Hi Sarang! My name is ${form.name}.\n\nReason: ${form.reason}\n\nMy number: +${fullNumber}`
+        `Hi Junseo! My name is ${form.name}.\n\nReason: ${form.reason}\n\nMy number: +${fullNumber}`
       );
       window.open(`https://wa.me/${myNumber}?text=${msg}`, "_blank");
       return;
@@ -136,7 +136,7 @@ export default function ContactPage() {
                 suppressHydrationWarning
                 type="button"
                 onClick={() => setContactType("email")}
-                className={`flex-1 py-2 rounded-lg text-[10px] tracking-[0.2em] uppercase font-medium transition-all duration-200 ${
+                className={`hidden flex-1 py-2 rounded-lg text-[10px] tracking-[0.2em] uppercase font-medium transition-all duration-200 ${
                   contactType === "email" ? "bg-[#ff6b1a] text-black" : "bg-white/5 text-white/60 hover:bg-white/10"
                 }`}
               >
@@ -267,7 +267,8 @@ export default function ContactPage() {
             <span className="block ghost-orange">cool.</span>
           </h1>
           <p className="cp-label mt-6 text-white/20 text-sm font-light leading-relaxed text-right">
-            Got a project in mind?<br />Drop your details and I'll get back to you.
+            Open to engineering conversations and new opportunities.<br />
+            <a href="mailto:pjs9177@naver.com" className="text-white/55 hover:text-[#ff6b1a] transition-colors">pjs9177@naver.com</a>
           </p>
         </div>
 

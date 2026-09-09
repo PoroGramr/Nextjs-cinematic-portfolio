@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { supabase } from '@/lib/supabase';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const DAILY_LIMIT = 3;
 
 function getIP(request) {
@@ -26,11 +24,15 @@ export async function POST(request) {
   const dayStart = new Date();
   dayStart.setHours(0, 0, 0, 0);
 
-  const { count } = await supabase
-    .from('inquiries')
-    .select('*', { count: 'exact', head: true })
-    .eq('ip', ip)
-    .gte('created_at', dayStart.toISOString());
+  let count = 0;
+  if (supabase) {
+    const result = await supabase
+      .from('inquiries')
+      .select('*', { count: 'exact', head: true })
+      .eq('ip', ip)
+      .gte('created_at', dayStart.toISOString());
+    count = result.count || 0;
+  }
 
   if (count >= DAILY_LIMIT) {
     return NextResponse.json(
@@ -40,16 +42,22 @@ export async function POST(request) {
   }
 
   try {
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json({ error: 'Email service is not configured' }, { status: 503 });
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     // Save to Supabase (include ip for rate limiting)
-    const { error: dbError } = await supabase.from('inquiries').insert([{ name, email, message, ip }]);
-    if (dbError) {
-      console.error('Supabase insert error:', dbError);
+    if (supabase) {
+      const { error: dbError } = await supabase.from('inquiries').insert([{ name, email, message, ip }]);
+      if (dbError) console.error('Supabase insert error:', dbError);
     }
 
     // Send email
     const { data, error: emailError } = await resend.emails.send({
-      from: 'Portfolio Contact <support@sarang-space.site>',
-      to: process.env.ADMIN_EMAIL,
+      from: process.env.RESEND_FROM_EMAIL || 'Portfolio Contact <onboarding@resend.dev>',
+      to: process.env.ADMIN_EMAIL || 'pjs9177@naver.com',
       replyTo: email,
       subject: `New message from ${name}`,
       html: `

@@ -61,8 +61,8 @@ export default function About({ standalone = false }) {
       {standalone && (
         <div className="about-img absolute inset-0 z-0">
           <Image
-            src="/photo/about me.webp"
-            alt="Sarang"
+            src="/photo/junseo-cyber-bg-v1.webp"
+            alt="Junseo Park's cyber security workspace"
             fill
             className="object-cover object-center"
             priority
@@ -137,7 +137,7 @@ export default function About({ standalone = false }) {
 
             <div className="w-full">
               <p className={`about-p text-[10px] tracking-[0.4em] uppercase mb-6 ${standalone ? "text-left" : "text-right"}`}>
-                <span className="border-b border-white/30 pb-2 inline-block text-white/50">Creative Tools</span>
+                <span className="border-b border-white/30 pb-2 inline-block text-white/50">AI &amp; Infrastructure</span>
               </p>
               <div className={`flex gap-2 flex-wrap ${standalone ? "justify-start" : "justify-end"}`}>
                 {CREATIVE.map((s) => (

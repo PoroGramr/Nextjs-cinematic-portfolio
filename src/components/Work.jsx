@@ -10,10 +10,10 @@ gsap.registerPlugin(ScrollTrigger);
 const CATEGORIES = [
   {
     num: "01",
-    label: "Website",
-    title: "Web Design & Development",
+    label: "Backend & Performance",
+    title: "Systems That Stay Fast",
     description:
-      "High-performance websites, Shopify stores, and Next.js web apps — pixel-perfect and built for conversion.",
+      "Query tuning, JVM optimization, caching, and API design backed by measurable production results.",
     icon: (
       <svg viewBox="0 0 40 40" fill="none" className="w-8 h-8 opacity-20 group-hover:opacity-60 transition-opacity duration-500">
         <rect x="4" y="8" width="32" height="24" rx="3" stroke="currentColor" strokeWidth="1.5"/>
@@ -23,14 +23,14 @@ const CATEGORIES = [
         <circle cx="17" cy="11" r="1.2" fill="currentColor"/>
       </svg>
     ),
-    href: "/projects?cat=website",
+    href: "/projects?cat=backend",
   },
   {
     num: "02",
-    label: "Photo / Poster Design",
-    title: "Visual & Graphic Design",
+    label: "AI Agent & Security",
+    title: "Grounded AI for Operations",
     description:
-      "Brand identities, social media creatives, posters, and photo edits that stop the scroll and tell the story.",
+      "On-premise security agents combining deterministic analysis, tool calling, RAG, and evidence verification.",
     icon: (
       <svg viewBox="0 0 40 40" fill="none" className="w-8 h-8 opacity-20 group-hover:opacity-60 transition-opacity duration-500">
         <rect x="5" y="5" width="30" height="30" rx="3" stroke="currentColor" strokeWidth="1.5"/>
@@ -38,14 +38,14 @@ const CATEGORIES = [
         <path d="M5 28l9-8 6 6 5-5 10 9" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
       </svg>
     ),
-    href: "/projects?cat=design",
+    href: "/projects?cat=ai",
   },
   {
     num: "03",
-    label: "Video",
-    title: "Video & Motion Editing",
+    label: "Platform & Infrastructure",
+    title: "Reliable Delivery at Scale",
     description:
-      "Cinematic reels, brand films, short-form content, and motion graphics that captivate and convert audiences.",
+      "Zero-downtime deployment, Redis high availability, observability, and gradual legacy modernization.",
     icon: (
       <svg viewBox="0 0 40 40" fill="none" className="w-8 h-8 opacity-20 group-hover:opacity-60 transition-opacity duration-500">
         <rect x="4" y="9" width="24" height="22" rx="3" stroke="currentColor" strokeWidth="1.5"/>
@@ -53,7 +53,7 @@ const CATEGORIES = [
         <path d="M13 16l7 4-7 4V16z" fill="currentColor" opacity="0.5"/>
       </svg>
     ),
-    href: "/projects?cat=video",
+    href: "/projects?cat=platform",
   },
 ];
 
@@ -109,10 +109,10 @@ export default function Work() {
 
             {/* Category pills — decorative only */}
             <div className="flex flex-wrap gap-2 lg:pb-2">
-              {["Website", "Photo / Poster Design", "Video"].map((cat) => (
+              {["Backend", "AI", "Platform"].map((cat) => (
                 <Link
                   key={cat}
-                  href={`/projects${cat !== "All" ? `?cat=${cat.toLowerCase().split(" ")[0]}` : ""}`}
+                  href={`/projects?cat=${cat.toLowerCase()}`}
                   className="px-4 py-2 rounded-full text-[10px] md:text-xs font-medium tracking-widest uppercase transition-all duration-300 bg-transparent text-white/40 border border-white/10 hover:text-white hover:border-white/30"
                 >
                   {cat}

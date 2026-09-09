@@ -23,6 +23,7 @@ export const SECTION = {
 
 // Add / remove countries as needed. code = dial prefix (no +).
 export const COUNTRIES = [
+  { code: "82",  name: "South Korea",   flag: "🇰🇷" },
   { code: "91",  name: "India",         flag: "🇮🇳" },
   { code: "1",   name: "US / Canada",   flag: "🇺🇸" },
   { code: "44",  name: "UK",            flag: "🇬🇧" },
@@ -41,7 +42,6 @@ export const COUNTRIES = [
   { code: "34",  name: "Spain",         flag: "🇪🇸" },
   { code: "55",  name: "Brazil",        flag: "🇧🇷" },
   { code: "81",  name: "Japan",         flag: "🇯🇵" },
-  { code: "82",  name: "South Korea",   flag: "🇰🇷" },
   { code: "86",  name: "China",         flag: "🇨🇳" },
   { code: "7",   name: "Russia",        flag: "🇷🇺" },
 ];

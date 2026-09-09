@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
+import { FALLBACK_PROJECTS } from "@/app/work/content";
 
 const CircularGallery = dynamic(
   () => import("@/components/CircularGallery/CircularGallery"),
@@ -242,13 +243,12 @@ export default function ProjectsPage() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const catParam = searchParams.get("cat");
-  // Normalize mapping: "website" -> "WEBSITE", "design" -> "DESIGNS", "video" -> "VIDEOS"
   const getInitialCategory = () => {
     if (!catParam) return "ALL";
     const c = catParam.toLowerCase();
-    if (c.includes("web") || c.includes("site")) return "WEBSITE";
-    if (c.includes("design") || c.includes("poster") || c.includes("photo") || c.includes("pic")) return "DESIGNS";
-    if (c.includes("video") || c.includes("motion") || c.includes("film") || c.includes("edit")) return "VIDEOS";
+    if (c.includes("back") || c.includes("performance")) return "BACKEND";
+    if (c.includes("ai") || c.includes("agent") || c.includes("security")) return "AI";
+    if (c.includes("platform") || c.includes("infra")) return "PLATFORM";
     return "ALL";
   };
   
@@ -261,11 +261,10 @@ export default function ProjectsPage() {
         if (data && data.length > 0) {
           const normalizeCategory = (cat) => {
             const c = (cat || "").toLowerCase();
-            if (c.includes("web") || c.includes("site")) return "Website";
-            if (c.includes("design") || c.includes("poster") || c.includes("ui") || c.includes("graphic")) return "Designs";
-            if (c.includes("photo") || c.includes("image") || c.includes("pic")) return "Photos";
-            if (c.includes("video") || c.includes("motion") || c.includes("film") || c.includes("edit")) return "Videos";
-            return cat || "Website";
+            if (c.includes("back") || c.includes("performance")) return "Backend";
+            if (c.includes("ai") || c.includes("agent") || c.includes("security")) return "AI";
+            if (c.includes("platform") || c.includes("infra") || c.includes("devops")) return "Platform";
+            return cat || "Backend";
           };
           const mapped = data.map((p) => ({
             id: p.id,
@@ -278,11 +277,27 @@ export default function ProjectsPage() {
           }));
           setAllFull(mapped);
         } else {
-          setAllFull([]);
+          setAllFull(FALLBACK_PROJECTS.map((p) => ({
+            id: p.id,
+            image: p.image,
+            text: p.title,
+            category: p.category,
+            description: p.description,
+            tech: p.tech,
+            link: p.link,
+          })));
         }
       })
       .catch(() => {
-        setAllFull([]);
+        setAllFull(FALLBACK_PROJECTS.map((p) => ({
+          id: p.id,
+          image: p.image,
+          text: p.title,
+          category: p.category,
+          description: p.description,
+          tech: p.tech,
+          link: p.link,
+        })));
       });
   }, []);
 
@@ -314,7 +329,7 @@ export default function ProjectsPage() {
     }
   }, [filteredFull, allFull, router]);
 
-  const categories = ["ALL", "WEBSITE", "DESIGNS", "PHOTOS", "VIDEOS"];
+  const categories = ["ALL", "BACKEND", "AI", "PLATFORM"];
 
   return (
     <>
@@ -348,20 +363,20 @@ export default function ProjectsPage() {
         {/* Heading — desktop only */}
         <div className="hidden md:block absolute top-0 left-0 px-6 md:px-20 pt-24 md:pt-28 pointer-events-none z-20">
           <p className="font-sans text-[10px] text-[#ff6b1a] tracking-[0.5em] uppercase mb-2 md:mb-3 font-medium">
-            Creative
+            Engineering
           </p>
           <h1
             className="font-sans font-black tracking-tighter text-white leading-none"
             style={{ fontSize: "clamp(2rem, 8vw, 8rem)" }}
           >
-            Archive.
+            Case Studies.
           </h1>
         </div>
 
         {/* Mobile: section title in top nav area */}
         <div className="md:hidden absolute top-0 left-0 right-0 px-6 pt-20 pointer-events-none z-20 flex items-center justify-between">
           <div>
-            <p className="text-[9px] text-[#ff6b1a] tracking-[0.4em] uppercase font-medium">Creative</p>
+            <p className="text-[9px] text-[#ff6b1a] tracking-[0.4em] uppercase font-medium">Engineering</p>
             <p className="text-white font-black tracking-tighter text-2xl leading-none">
               {activeCategory === "ALL" ? "Archive." : activeCategory.charAt(0) + activeCategory.slice(1).toLowerCase()}
             </p>

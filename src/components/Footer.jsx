@@ -21,7 +21,10 @@ const SOCIAL_KEYS = [
 
 export default function Footer() {
   const ref = useRef(null);
-  const [socials, setSocials] = useState([]);
+  const [socials, setSocials] = useState([
+    { label: "GitHub", href: "https://github.com/PoroGramr" },
+    { label: "Tech Blog", href: "https://jspark33.tistory.com" },
+  ]);
 
   useEffect(() => {
     fetch("/api/settings?key=social_links")
@@ -69,13 +72,13 @@ export default function Footer() {
         {/* name + tagline */}
         <div>
           <p className="text-[10px] text-[#ff6b1a] tracking-[0.5em] uppercase mb-4 font-medium">
-            Creative Developer
+            Full Stack AI Developer
           </p>
           <h2
             className="font-black tracking-tighter leading-[0.85]"
             style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
           >
-            <span className="block text-white">Sarang</span>
+            <span className="block text-white">Junseo Park</span>
           </h2>
         </div>
 
@@ -121,10 +124,10 @@ export default function Footer() {
           className="text-[10px] text-white/20 tracking-widest"
           style={{ fontFamily: '"Times New Roman", Times, serif', fontStyle: "italic" }}
         >
-          sarangwalle@gmail.com
+          pjs9177@naver.com
         </p>
         <p className="text-[10px] text-white/15 tracking-[0.3em] uppercase">
-          © {new Date().getFullYear()} Sarang Walle. All rights reserved.
+          © {new Date().getFullYear()} Junseo Park. All rights reserved.
         </p>
       </div>
 

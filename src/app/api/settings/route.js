@@ -15,6 +15,7 @@ async function isAdmin() {
 }
 
 export async function GET(request) {
+  if (!supabase) return NextResponse.json(null);
   const { searchParams } = new URL(request.url);
   const key = searchParams.get('key');
   let query = supabase.from('settings').select('*');
@@ -26,6 +27,9 @@ export async function GET(request) {
 export async function PATCH(request) {
   if (!(await isAdmin())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  if (!supabase) {
+    return NextResponse.json({ error: 'Database is not configured' }, { status: 503 });
   }
   const { key, value } = await request.json();
   const { data, error } = await supabase

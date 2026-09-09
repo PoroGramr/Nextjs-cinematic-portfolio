@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -89,14 +88,13 @@ export default function Navbar() {
               <span className="text-[10px] tracking-[0.35em] uppercase font-medium">{getBackLabel(pathname)}</span>
             </Link>
           )}
-          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity duration-300">
-            <Image
-              src="/photo/logo navbar inverse.png"
-              alt="Sarang — Portfolio Designer & Creative Developer"
-              width={120} height={40}
-              className="h-9 w-auto"
-              priority
-            />
+          <Link href="/" className="group flex items-center gap-3 hover:opacity-80 transition-opacity duration-300">
+            <span className="grid h-9 w-9 place-items-center rounded-full border border-white/15 bg-black/20 text-[10px] font-black tracking-tight text-[#ff6b1a] backdrop-blur-md transition-colors group-hover:border-[#ff6b1a]/50">
+              JP
+            </span>
+            <span className="hidden text-[10px] font-bold uppercase tracking-[0.28em] text-white/55 lg:block">
+              Junseo Park
+            </span>
           </Link>
         </div>
 
@@ -118,7 +116,7 @@ export default function Navbar() {
               onClick={() => setIsContactOpen(true)}
               className="px-5 py-2 bg-[#ff6b1a] text-black font-bold rounded-full hover:bg-white hover:text-black transition-colors duration-300 flex items-center gap-2"
             >
-              Start Now
+              Contact Me
             </button>
           </li>
         </ul>
@@ -166,12 +164,12 @@ export default function Navbar() {
                  }}
                  className="w-full py-4 bg-[#ff6b1a] text-black text-xl font-bold tracking-tight rounded-2xl hover:bg-white hover:text-black transition-colors duration-300"
                >
-                 Start Now
+                 Contact Me
                </button>
             </li>
           </ul>
           <div className="mobile-nav-link mt-16 text-[10px] text-white/20 tracking-[0.4em] uppercase">
-            Sarang · Portfolio
+            Junseo Park · Portfolio
           </div>
         </div>
       )}
