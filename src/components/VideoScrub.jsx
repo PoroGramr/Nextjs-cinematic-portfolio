@@ -83,6 +83,11 @@ export default function VideoScrub() {
     };
 
     const tick = () => {
+      // Do not rely only on the browser scroll event. Lenis/Next can miss the first
+      // native scroll event on a cold page load, which leaves targetTime stuck at 0
+      // until the component remounts after client-side navigation.
+      updateTarget();
+
       const smoothing = window.innerWidth < 768 ? 0.24 : 0.18;
       renderedTime += (targetTime - renderedTime) * smoothing;
 
