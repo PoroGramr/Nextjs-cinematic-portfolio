@@ -1,0 +1,36 @@
+services:
+  nextjs-cinematic-portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs-cinematic-portfolio
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+    networks:
+      - portfolio-net
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.nextjs-cinematic-portfolio.rule=Host(`www.porogramr.com`)"
+      - "traefik.http.routers.nextjs-cinematic-portfolio.entrypoints=websecure"
+      - "traefik.http.routers.nextjs-cinematic-portfolio.tls=true"
+      - "traefik.http.routers.nextjs-cinematic-portfolio.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.nextjs-cinematic-portfolio.service=nextjs-cinematic-portfolio"
+      - "traefik.http.services.nextjs-cinematic-portfolio.loadbalancer.server.port=3000"
+      - "traefik.http.routers.nextjs-cinematic-portfolio-http.rule=Host(`www.porogramr.com`)"
+      - "traefik.http.routers.nextjs-cinematic-portfolio-http.entrypoints=web"
+      - "traefik.http.routers.nextjs-cinematic-portfolio-http.middlewares=nextjs-cinematic-portfolio-https-redirect"
+      - "traefik.http.middlewares.nextjs-cinematic-portfolio-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.nextjs-cinematic-portfolio-https-redirect.redirectscheme.permanent=true"
+
+networks:
+  portfolio-net:
+    driver: bridge
+  web:
+    external: true

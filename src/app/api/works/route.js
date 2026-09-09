@@ -21,6 +21,10 @@ export async function GET(request) {
   const admin = await isAdmin();
   const category = searchParams.get('category');
 
+  if (!supabase) {
+    return NextResponse.json([]);
+  }
+
   let query = supabase
     .from('works')
     .select('*')
@@ -47,6 +51,10 @@ export async function POST(request) {
   if (!(await isAdmin())) {
     console.error('[POST /api/works] Unauthorized — no valid admin_token cookie');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!supabase) {
+    return NextResponse.json({ error: 'Supabase is not configured' }, { status: 503 });
   }
 
   const body = await request.json();
