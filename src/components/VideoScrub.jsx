@@ -20,6 +20,25 @@ export default function VideoScrub() {
     let frameId = null;
     let seeking = false;
     let pendingTime = null;
+    let hasPrimedFrame = false;
+
+    const revealVideo = () => {
+      scene.dataset.videoReady = "true";
+    };
+
+    const primeFrame = () => {
+      if (hasPrimedFrame) return;
+      if (video.readyState < 1) return;
+
+      hasPrimedFrame = true;
+      if (Number.isFinite(video.duration)) duration = video.duration;
+      renderedTime = clamp((window.scrollY / getEndScroll()) * duration, 0, duration);
+      targetTime = renderedTime;
+
+      // Seeking to exact 0 can leave the first frame undecoded on a cold page load in Safari/Chrome.
+      // A tiny non-zero seek primes the decoder, while still visually showing the opening frame.
+      video.currentTime = Math.max(0.001, renderedTime);
+    };
 
     const getEndScroll = () => {
       const contact = document.getElementById("contact-section");
@@ -75,26 +94,33 @@ export default function VideoScrub() {
     };
 
     const onMetadata = () => {
-      if (Number.isFinite(video.duration)) duration = video.duration;
-      renderedTime = clamp((window.scrollY / getEndScroll()) * duration, 0, duration);
-      targetTime = renderedTime;
-      // Seeking to exact 0 can leave the first frame undecoded on a cold page load in Safari/Chrome.
-      // A tiny non-zero seek primes the decoder, while still visually showing the opening frame.
-      video.currentTime = Math.max(0.001, renderedTime);
+      primeFrame();
+    };
+
+    const onRenderableFrame = () => {
+      primeFrame();
+      revealVideo();
     };
 
     video.addEventListener("loadedmetadata", onMetadata);
+    video.addEventListener("loadeddata", onRenderableFrame);
+    video.addEventListener("canplay", onRenderableFrame);
+    video.addEventListener("seeked", onRenderableFrame);
     video.addEventListener("seeked", flushSeek);
     window.addEventListener("scroll", updateTarget, { passive: true });
     window.addEventListener("resize", updateTarget, { passive: true });
 
-    if (video.readyState >= 1) onMetadata();
+    if (video.readyState >= 1) primeFrame();
+    if (video.readyState >= 2) revealVideo();
     updateTarget();
     frameId = requestAnimationFrame(tick);
 
     return () => {
       if (frameId !== null) cancelAnimationFrame(frameId);
       video.removeEventListener("loadedmetadata", onMetadata);
+      video.removeEventListener("loadeddata", onRenderableFrame);
+      video.removeEventListener("canplay", onRenderableFrame);
+      video.removeEventListener("seeked", onRenderableFrame);
       video.removeEventListener("seeked", flushSeek);
       window.removeEventListener("scroll", updateTarget);
       window.removeEventListener("resize", updateTarget);
@@ -106,7 +132,7 @@ export default function VideoScrub() {
       <div className="mobile-video-backdrop" />
       <video
         ref={videoRef}
-        src="/videos/optimized_junseo-scrub.mp4"
+        src="/videos/optimized_junseo-scrub.mp4?v=20260910a"
         poster="/photo/junseo-video-poster.webp"
         className="scene-video"
         muted
@@ -115,6 +141,7 @@ export default function VideoScrub() {
         disablePictureInPicture
         tabIndex={-1}
       />
+      <div className="video-poster-fallback" />
 
       <div className="screen-glow" />
       <div className="floating-particles">
@@ -146,8 +173,31 @@ export default function VideoScrub() {
           object-position: center center;
           transform: scale(var(--video-scale));
           transform-origin: center;
-          will-change: transform;
+          will-change: transform, opacity;
           filter: saturate(0.92) contrast(1.03);
+          opacity: 0;
+          transition: opacity 260ms ease;
+        }
+
+        .video-scene[data-video-ready="true"] .scene-video {
+          opacity: 1;
+        }
+
+        .video-poster-fallback {
+          position: absolute;
+          inset: 0;
+          background-image: url('/photo/junseo-video-poster.webp');
+          background-size: cover;
+          background-position: center center;
+          transform: scale(var(--video-scale));
+          transform-origin: center;
+          opacity: 1;
+          transition: opacity 360ms ease;
+          will-change: opacity, transform;
+        }
+
+        .video-scene[data-video-ready="true"] .video-poster-fallback {
+          opacity: 0;
         }
 
         .mobile-video-backdrop {
@@ -222,13 +272,18 @@ export default function VideoScrub() {
             transform: scale(1.16);
           }
 
-          .scene-video {
+          .scene-video,
+          .video-poster-fallback {
             inset: 40% auto auto -104%;
             width: 230%;
             max-width: none;
             height: auto;
+            aspect-ratio: 16 / 9;
             object-fit: contain;
             object-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 82%, transparent 100%);
             mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 82%, transparent 100%);
           }
