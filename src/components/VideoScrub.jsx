@@ -3,17 +3,21 @@
 import { useEffect, useRef } from "react";
 
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+const MOBILE_FRAME_COUNT = 80;
+const getMobileFrameSrc = (index) => `/videos/junseo-scrub-frames/frame-${String(index + 1).padStart(3, "0")}.jpg`;
 
 export default function VideoScrub() {
   const sceneRef = useRef(null);
   const videoRef = useRef(null);
+  const frameRef = useRef(null);
 
   useEffect(() => {
     const scene = sceneRef.current;
     const video = videoRef.current;
+    const frame = frameRef.current;
     if (!scene || !video) return;
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mobileMedia = window.matchMedia("(max-width: 767px)");
     let duration = 10;
     let targetTime = 0;
     let renderedTime = 0;
@@ -26,13 +30,35 @@ export default function VideoScrub() {
       scene.dataset.videoReady = "true";
     };
 
+    const getScrollTop = () => {
+      if (typeof window.__portfolioScrollY === "number") return window.__portfolioScrollY;
+      return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    };
+
+    const preloadMobileFrame = (index) => {
+      if (!mobileMedia.matches) return;
+      if (index < 0 || index >= MOBILE_FRAME_COUNT) return;
+      const img = new Image();
+      img.src = getMobileFrameSrc(index);
+    };
+
+    const updateMobileFrame = (progress) => {
+      if (!frame || !mobileMedia.matches) return;
+      const index = Math.round(clamp(progress) * (MOBILE_FRAME_COUNT - 1));
+      const src = getMobileFrameSrc(index);
+      if (!frame.src.endsWith(src)) frame.src = src;
+      revealVideo();
+      preloadMobileFrame(index + 1);
+      preloadMobileFrame(index + 2);
+    };
+
     const primeFrame = () => {
       if (hasPrimedFrame) return;
       if (video.readyState < 1) return;
 
       hasPrimedFrame = true;
       if (Number.isFinite(video.duration)) duration = video.duration;
-      renderedTime = clamp((window.scrollY / getEndScroll()) * duration, 0, duration);
+      renderedTime = clamp((getScrollTop() / getEndScroll()) * duration, 0, duration);
       targetTime = renderedTime;
 
       // Seeking to exact 0 can leave the first frame undecoded on a cold page load in Safari/Chrome.
@@ -53,8 +79,9 @@ export default function VideoScrub() {
     };
 
     const updateTarget = () => {
-      const progress = clamp(window.scrollY / getEndScroll());
+      const progress = clamp(getScrollTop() / getEndScroll());
       targetTime = progress * duration;
+      updateMobileFrame(progress);
       scene.style.setProperty("--scrub-progress", progress.toFixed(4));
       scene.style.setProperty("--video-scale", `${1.015 + progress * 0.035}`);
     };
@@ -91,7 +118,7 @@ export default function VideoScrub() {
       const smoothing = window.innerWidth < 768 ? 0.24 : 0.18;
       renderedTime += (targetTime - renderedTime) * smoothing;
 
-      if (!reducedMotion.matches && Math.abs(video.currentTime - renderedTime) > 0.025) {
+      if (Math.abs(video.currentTime - renderedTime) > 0.025) {
         seek(renderedTime);
       }
 
@@ -145,6 +172,13 @@ export default function VideoScrub() {
         preload="auto"
         disablePictureInPicture
         tabIndex={-1}
+      />
+      <img
+        ref={frameRef}
+        src={getMobileFrameSrc(0)}
+        alt=""
+        className="mobile-scrub-frame"
+        draggable="false"
       />
       <div className="video-poster-fallback" />
 
@@ -203,6 +237,10 @@ export default function VideoScrub() {
 
         .video-scene[data-video-ready="true"] .video-poster-fallback {
           opacity: 0;
+        }
+
+        .mobile-scrub-frame {
+          display: none;
         }
 
         .mobile-video-backdrop {
@@ -277,15 +315,26 @@ export default function VideoScrub() {
             transform: scale(1.16);
           }
 
-          .scene-video,
+          .scene-video {
+            display: none;
+          }
+
+          .mobile-scrub-frame {
+            display: block;
+            position: absolute;
+            object-fit: contain;
+            object-position: center;
+            user-select: none;
+            -webkit-user-drag: none;
+          }
+
+          .mobile-scrub-frame,
           .video-poster-fallback {
             inset: 40% auto auto -104%;
             width: 230%;
             max-width: none;
             height: auto;
             aspect-ratio: 16 / 9;
-            object-fit: contain;
-            object-position: center;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;

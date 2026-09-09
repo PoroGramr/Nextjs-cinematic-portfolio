@@ -28,7 +28,12 @@ export default function Home() {
       wheelMultiplier: 1, // Normal scroll speed
     });
 
+    const syncScrollValue = () => {
+      window.__portfolioScrollY = typeof lenis.scroll === "number" ? lenis.scroll : window.scrollY;
+    };
+
     lenis.on("scroll", () => {
+      syncScrollValue();
       ScrollTrigger.update();
       if (blurWrapRef.current && footerRef.current) {
         const footerTop = footerRef.current.getBoundingClientRect().top;
@@ -40,7 +45,11 @@ export default function Home() {
 
     });
 
-    const tick = (time) => { lenis.raf(time * 1000); };
+    const tick = (time) => {
+      lenis.raf(time * 1000);
+      syncScrollValue();
+    };
+    syncScrollValue();
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
